@@ -43,7 +43,8 @@ jobs:
         run: npm run test
 
       - name: Upload test report # test report is generated in the vite config
-        if: ${{ steps.test-id.outcome == 'failure' }} # if step test-id fails, then run
+        # ensures that the failure is from the step we want
+        if: failure() && ${{ steps.test-id.outcome == 'failure' }} # if step test-id fails, then run
         uses: actions/upload-artifact@v3
         with:
           name: test-report
