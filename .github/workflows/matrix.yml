@@ -1,0 +1,27 @@
+name: Matrix Demo
+
+on: push
+
+jobs:
+  build:
+    # using matrix to specify different node versions and os
+    strategy:
+      matrix:
+        node-version: [12, 14, 16]
+        operating-system: [ubuntu-latest, macos-latest]
+    # now we can set the runner dynamically
+    runs-on: ${{ matrix.operating-system }} # run this job once per value in the os field and they'll be run in parallet
+    steps:
+      - name: get code
+        uses: actions/checkout@v3
+
+      - name: install NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
