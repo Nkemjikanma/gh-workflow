@@ -2,14 +2,28 @@ name: Reusable Workflow
 on:
   workflow_call:
     inputs:
-      artifact_name: # optional name
+      artifact_name: # input name
         description: The name of artifact
         required: false
         default: dist # if not provided, then use dist as default
         type: string
 
+    secrets: # specify secrete (if available)
+      some-secret: # secrete name
+        required: false
+
+    # reusable workflows can return outputs to the calling workflow
+    outputs:
+      result: # output name
+        description: The result of deploy
+        value: ${{ jobs.deploy.outputs.deploy_output}} # get the output from the job
+
+
 jobs:
   deploy:
+    # get the output set as the output of the deploy job
+    outputs:
+      deploy_output: ${{ steps.set_result.outputs.step_result }}
     runs-on: ubuntu-latest
     steps:
       - name: get code
@@ -22,3 +36,8 @@ jobs:
 
       - name: output info
         run: echo 'Deploying'
+
+        # set the output of the job
+      - name: set result output for deploy job
+        id: set_result
+        run: echo "step_result=success" >> $GITHUB_OUTPUT

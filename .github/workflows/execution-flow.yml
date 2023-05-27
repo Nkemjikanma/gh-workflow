@@ -78,11 +78,22 @@ jobs:
         with:
           name: dist-files
           path: dist
+
   deploy:
     needs: build
     uses: ./.github/workflows/reusable.yml
     with:
       artifact_name: dist-files
+    # you can pass secrets as well but in this case, we haven't specified the secret in github
+    # secrets:
+    #   some-secret: ${{ secrets.some-secret }}
+
+  deploy-output-from-reusaable: # display output from reusable workflow
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: print reusable output
+        run: echo "${{ needs.deploy.outputs.result}}"
 
   report:
     if: failure()
