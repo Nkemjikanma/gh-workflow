@@ -82,7 +82,6 @@ jobs:
     needs: build
     uses: ./.github/workflows/reusable.yml
 
-
   report:
     if: failure()
     needs: [lint, deploy]
